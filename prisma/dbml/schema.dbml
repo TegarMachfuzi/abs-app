@@ -1,0 +1,117 @@
+//// ------------------------------------------------------
+//// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+//// ------------------------------------------------------
+
+Table Account {
+  id String [pk]
+  userId String [not null]
+  type String [not null]
+  provider String [not null]
+  providerAccountId String [not null]
+  refresh_token String
+  access_token String
+  expires_at Int
+  token_type String
+  scope String
+  id_token String
+  session_state String
+
+  indexes {
+    (provider, providerAccountId) [unique]
+  }
+}
+
+Table Session {
+  id String [pk]
+  sessionToken String [unique, not null]
+  userId String [not null]
+  expires DateTime [not null]
+}
+
+Table User {
+  id String [pk]
+  username String [unique, not null]
+  name String
+  company String [not null]
+  address String
+  password String [not null]
+  image String
+  role Role [not null]
+}
+
+Table VerificationToken {
+  identifier String [not null]
+  token String [unique, not null]
+  expires DateTime [not null]
+
+  indexes {
+    (identifier, token) [unique]
+  }
+}
+
+Table Analytics {
+  id String [pk]
+  userId String [not null]
+  createdDate DateTime [default: `now()`, not null]
+  updatedDate DateTime [default: `now()`, not null]
+}
+
+Table DetailAnalytic {
+  id String [pk]
+  analyticId String [not null]
+  customerId String [not null]
+  customerName String [not null]
+  purchaseDate DateTime [not null]
+  items String [not null]
+  totalPurchase Float [not null]
+  salesType String
+  createdDate DateTime [default: `now()`, not null]
+}
+
+Table SummaryAnalytic {
+  id String [pk]
+  customerId String [not null]
+  customerName String [not null]
+  recency Float [not null]
+  frequency Float [not null]
+  monetary Float [not null]
+  recencyScore Float [not null]
+  frequencyScore Float [not null]
+  monetaryScore Float [not null]
+  rank Int [not null]
+  analyticId String [not null]
+  createdDate DateTime [default: `now()`, not null]
+}
+
+Table SegmentationConfig {
+  id String [pk]
+  labelName String [not null]
+  description String
+  minRecency Int [not null]
+  minFrequency Int [not null]
+  minMonetary Float [not null]
+  createdDate DateTime [default: `now()`, not null]
+  updatedDate DateTime [default: `now()`, not null]
+}
+
+Table SegmentDescription {
+  id String [pk]
+  segment String [not null]
+  activity String [not null]
+  actionableTip String [not null]
+}
+
+Enum Role {
+  ADMIN
+  COMPANY
+}
+
+Ref: Account.userId > User.id [delete: Cascade]
+
+Ref: Session.userId > User.id [delete: Cascade]
+
+Ref: Analytics.userId > User.id [delete: Cascade]
+
+Ref: DetailAnalytic.analyticId > Analytics.id [delete: Cascade]
+
+Ref: SummaryAnalytic.analyticId > Analytics.id [delete: Cascade]
